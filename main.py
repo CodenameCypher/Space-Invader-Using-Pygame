@@ -55,6 +55,26 @@ gameOverfont = pygame.font.Font('fonts/Spooky Haunt.otf',50)
 gameX = 400
 gameY = 300
 
+#button play again
+playAgain = pygame.font.Font('fonts/Neuterous.otf',35)
+playAgainX = 350
+playAgainY = 370
+
+#quit text
+quitText = pygame.font.Font('fonts/Neuterous.otf',35)
+quitX = 410
+quitY = 430
+
+def quitText(x,y):
+    s = playAgain.render("Quit",True,(255,255,255))
+    # pygame.draw.rect(mainscreen,(170,170,170),[x,y,90,50])
+    mainscreen.blit(s,(x,y))
+
+def playAgainText(x,y):
+    s = playAgain.render("Play Again",True,(255,255,255))
+    # pygame.draw.rect(mainscreen,(170,170,170),[350,370,220,50])
+    mainscreen.blit(s,(x,y))
+
 def gameOverText(x,y):
     s = gameOverfont.render("GAME OVER",True,(255,255,255))
     mainscreen.blit(s,(x,y))
@@ -97,6 +117,15 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if 350 <= mouse[0] <= 570 and 370 <= mouse[1] <= 420:
+                score = 0
+                playerX = 370
+                playerY = 480
+                running = True
+            if quitX <= mouse[0] <= 500 and quitY <= mouse[1] <= quitY + 50:
+                running = False
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 playerXChange = -0.8
@@ -121,6 +150,19 @@ while running:
             if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 playerYChange = 0
 
+    #mouse movement
+    mouse = pygame.mouse.get_pos()
+
+    if score >= 20 or score <= -10:
+        if 350 <= mouse[0] <= 570 and 370 <= mouse[1] <= 420:
+            pygame.draw.rect(mainscreen,(110,110,110),[350,370,220,50])
+        else:
+            pygame.draw.rect(mainscreen,(170,170,170),[350,370,220,50])
+        if quitX <= mouse[0] <= 500 and quitY <= mouse[1] <= quitY + 50:
+            pygame.draw.rect(mainscreen,(100,100,100),[quitX,quitY,90,50])
+        else:
+            pygame.draw.rect(mainscreen,(170,170,170),[quitX,quitY,90,50])
+
     #player movement
     playerX += playerXChange
     playerY += playerYChange
@@ -139,7 +181,8 @@ while running:
     for i in range(number_Enemies):
         if score >= 20 or score <=-10:
             gameOverText(gameX,gameY)
-            running = False
+            playAgainText(playAgainX,playAgainY)
+            quitText(quitX,quitY)
             break
 
         enemyX[i] += enemyXChange[i]
@@ -175,6 +218,7 @@ while running:
 
         enemy(enemyX[i],enemyY[i],i)
     #enemy loop ends
+
     #bullet boundaries
     if bulletY < 0 :
         bulletY = playerY
@@ -184,9 +228,8 @@ while running:
         fire_bullet(bulletX,bulletY)
         bulletY -= bulletYChange
 
+
     player(playerX,playerY) #creating and updating the player
     showScore(scoreX,scoreY) #creating and updating the score
-
     pygame.display.update()
-    if running is False: time.sleep(2)
 #gameloop ends
